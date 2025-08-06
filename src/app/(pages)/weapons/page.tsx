@@ -10,7 +10,7 @@ export default function Weapons(){
     const [damage, setDamage] = useState<number>();
 
     const [edit_w_name, set_edit_w_name] = useState<string>('');
-    const [editDamage, setEditDamage] = useState<number>(0);
+    const [editDamage, setEditDamage] = useState<string>('');
  
     const [isViewOpen, setIsViewOpen] = useState<boolean>(false); 
     const [isUpdateFormOpen, setIsUpdateFormOpen] = useState<boolean>(false);
@@ -24,16 +24,22 @@ export default function Weapons(){
 
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        const parsedDamage = editDamage === "" ? undefined : Number(editDamage);
+
         const res = await fetch('/api/weapons', {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ weapon_id: currentWeaponID, w_name: edit_w_name, damage: editDamage })
+            body: JSON.stringify({ weapon_id: currentWeaponID, w_name: edit_w_name, damage: parsedDamage })
         })
 
         if(res.ok) {
             console.log("Weapon updated!");
+            fetch('/api/weapons')
+            .then(res => res.json())
+            .then(data => setWeapons(data));
         } else {
             console.error("update failed");
         }
@@ -77,7 +83,7 @@ export default function Weapons(){
                             type="number"
                             placeholder={editWeapon[0].damage.toString()}
                             value={editDamage}
-                            onChange={(e) => setEditDamage(Number(e.target.value))}
+                            onChange={(e) => setEditDamage(e.target.value)}
                             />
                         <button type="submit">Update Weapon</button>
                     </form>
