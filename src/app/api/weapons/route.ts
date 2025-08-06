@@ -53,11 +53,11 @@ export async function PATCH(req: NextRequest) {
     }
 
     try {
-        if(w_name !== undefined && w_name.trim() !== "") {
+        if(w_name !== undefined && w_name !== "") {
             await db.query('UPDATE weapons SET w_name = ? WHERE weapon_id = ?', [w_name, weapon_id]);
         }
 
-        if(damage !== undefined) {
+        if(damage !== undefined && damage !== "") {
             await db.query('UPDATE weapons SET damage = ? WHERE weapon_id = ?', [damage, weapon_id]);
         }
 
