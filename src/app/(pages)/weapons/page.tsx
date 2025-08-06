@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Weapon } from "@/app/types/weapon";
-// import data from "@/data.json";
+import WeaponView from "@/app/components/WeaponView";
 
 export default function Weapons(){
     const [weapons, setWeapons] = useState<Weapon[]>([]);
@@ -27,12 +27,12 @@ export default function Weapons(){
 
         const parsedDamage = editDamage === "" ? undefined : Number(editDamage);
 
-        const res = await fetch('/api/weapons', {
+        const res = await fetch(`/api/weapons/${currentWeaponID}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ weapon_id: currentWeaponID, w_name: edit_w_name, damage: parsedDamage })
+            body: JSON.stringify({ w_name: edit_w_name, damage: parsedDamage })
         })
 
         if(res.ok) {
@@ -95,18 +95,13 @@ export default function Weapons(){
     }
 
     const viewWeapon = () => {
-        if(isViewOpen){
+        if(isViewOpen){            
             const viewedWeapon = weapons.filter((weapon) => {
                 return weapon.weapon_id === currentWeaponID;
             })
-
-            return <div>
-                <p>Weapon Name: {viewedWeapon[0].w_name}</p>
-                <p>Damage Amount: {viewedWeapon[0].damage}</p>
-            </div>
-        } else {
-            return null;       
-        }
+            return <WeaponView w_name={viewedWeapon[0].w_name} damage={viewedWeapon[0].damage}/>
+        } 
+        return null;
     }
 
     const handleDelete = async (weaponID : number) => {
@@ -120,7 +115,7 @@ export default function Weapons(){
             const newData = weapons.filter((weapon) => {
             return weapon.weapon_id !== weaponID;
             })
-            
+
             setWeapons(newData);
         } catch(err) {
             console.error('Delete error:', err);
