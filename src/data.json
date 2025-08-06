@@ -1,0 +1,14 @@
+{
+    "inventory": [
+        {
+            "id": 1,
+            "w_name": "short sword",
+            "damage": 5
+        },
+        {
+            "id": 2,
+            "w_name": "spear",
+            "damage": 4
+        }
+    ]
+}
