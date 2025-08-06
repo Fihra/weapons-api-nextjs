@@ -71,7 +71,7 @@ export default function Weapons(){
 
             return (
                 <div>
-                    <h2>Edit weapon</h2>
+                    <h3>Edit weapon</h3>
                     <form onSubmit={handleUpdate}>
                         <input
                             type="text"
@@ -81,7 +81,7 @@ export default function Weapons(){
                             />
                         <input
                             type="number"
-                            placeholder={editWeapon[0].damage.toString()}
+                            placeholder={editWeapon[0].damage?.toString()}
                             value={editDamage}
                             onChange={(e) => setEditDamage(e.target.value)}
                             />
@@ -109,9 +109,29 @@ export default function Weapons(){
         }
     }
 
+    const handleDelete = async (weaponID : number) => {
+        try {
+            const res = await fetch(`/api/weapons/${weaponID}`, {
+                method: 'DELETE'
+            })
+
+            if(!res.ok) throw new Error('Failed to delete');
+
+            const newData = weapons.filter((weapon) => {
+            return weapon.weapon_id !== weaponID;
+            })
+            
+            setWeapons(newData);
+        } catch(err) {
+            console.error('Delete error:', err);
+        }
+
+        
+    }
+
     return(
         <div>
-            <h3>Weapons Page</h3>
+            <h2>Weapons Page</h2>
             <ul>
                 {weapons.map((weapon) => {
                     return (
@@ -125,12 +145,15 @@ export default function Weapons(){
                             setCurrentWeaponID(weapon.weapon_id);
                             setIsViewOpen(!isViewOpen);
                         }}>View</button>
+                        <button onClick={() => {
+                            handleDelete(weapon.weapon_id);
+                        }}>Remove</button>
                     </li>
                     )
                 })}
             </ul>
 
-            <p>Add a new Weapon</p>
+            <h3>Add a new Weapon</h3>
             <form onSubmit={handleSubmit}>
                 <input
                     type="text"
